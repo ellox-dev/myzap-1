@@ -1,22 +1,5 @@
 version: "3.5"
 services:
-  myzap_2dev:
-    build: 
-      context: .
-      target: myzap_2dev
-    container_name: myzap_2dev
-    working_dir: /usr/src/app
-    volumes:
-      - ${PATH_LOCAL}:/usr/src/app
-    ports:
-      - ${HOST_PORT}:${HOST_PORT}
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-    networks:
-      backend:
-        aliases:
-          - myzap_2dev
-
   myzap_2prod:
     build: 
       context: .
@@ -24,11 +7,17 @@ services:
     container_name: myzap_2prod
 #    image: gcr.io/maisagil/myzap
     ports:
-      - ${HOST_PORT}:${HOST_PORT}
+      - 3333:3333
+    environment:
+      VIRTUAL_HOST: wtpp.elxsys.com.br
+      LETSENCRYPT_HOST: wtpp.elxsys.com.br
     networks:
+      nginx-server_nginx-network:
       backend:
         aliases:
-          - myzap_2prod
+          - myzap_2prod      
 networks:
   backend:
     name: myzap_2network
+  nginx-server_nginx-network:
+    external: true
